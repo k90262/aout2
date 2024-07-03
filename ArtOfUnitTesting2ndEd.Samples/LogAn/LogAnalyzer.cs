@@ -13,12 +13,19 @@
 
         public bool IsValidLogFileName(string fileName)
         {
-            WasLastFileNameValid = false;
+            try
+            {
+                WasLastFileNameValid = false;
 
-            if (!_manager.IsValid(fileName)) return false;
+                if (!_manager.IsValid(fileName)) return false;
 
-            WasLastFileNameValid = true;
-            return true;
+                WasLastFileNameValid = true;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
