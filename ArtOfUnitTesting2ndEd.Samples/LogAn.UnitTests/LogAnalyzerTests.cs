@@ -6,6 +6,7 @@ namespace LogAn.UnitTests
     [TestFixture]
     public class LogAnalyzerTests
     {
+        private FakeExtensionManager _myFakeManager;
         [Test]
         public void IsValidLogFileName_BadExtension_ReturnsFalse()
         {
@@ -21,6 +22,7 @@ namespace LogAn.UnitTests
         public void IsValidLogFileName_GoodExtensionlowercase_ReturnsTrue()
         {
             LogAnalyzer analyzer = MakeAnalyzer();
+            _myFakeManager.WillBeValid = true;
 
             bool result = analyzer.IsValidLogFileName("filewithgoodextension.slf");
 
@@ -33,6 +35,7 @@ namespace LogAn.UnitTests
         public void IsValidLogFileName_GoodExtensionUpperCase_ReturnsTrue()
         {
             LogAnalyzer analyzer = MakeAnalyzer();
+            _myFakeManager.WillBeValid = true;
 
             bool result = analyzer.IsValidLogFileName("filewithgoodextension.SLF");
 
@@ -46,6 +49,7 @@ namespace LogAn.UnitTests
         public void IsValidLogFileName_ValidExtensions_ReturnsTrue(string file)
         {
             LogAnalyzer analyzer = MakeAnalyzer();
+            _myFakeManager.WillBeValid = true;
 
             bool result = analyzer.IsValidLogFileName(file);
 
@@ -59,13 +63,13 @@ namespace LogAn.UnitTests
         public void IsValidLogFileName_VariousExtensions_ChecksThem(string file,bool expected)
         {
             LogAnalyzer analyzer = MakeAnalyzer();
+            _myFakeManager.WillBeValid = expected;
 
             bool result = analyzer.IsValidLogFileName(file);
 
             Assert.AreEqual(expected,result);
         }
 
-        [Ignore]
         [Test]
         [ExpectedException(typeof(ArgumentException),
               ExpectedMessage = "filename has to be provided")]
@@ -77,10 +81,12 @@ namespace LogAn.UnitTests
 
         private LogAnalyzer MakeAnalyzer()
         {
-            return new LogAnalyzer();
+            _myFakeManager = new FakeExtensionManager();
+            LogAnalyzer log = new LogAnalyzer();
+            log.ExtensionManager = _myFakeManager;
+            return log;
         }
 
-        [Ignore]
         [Test]
         public void IsValidFileName_EmptyFileName_Throws()
         {
@@ -91,7 +97,6 @@ namespace LogAn.UnitTests
             StringAssert.Contains("filename has to be provided",ex.Message);
         }
       
-        [Ignore]
         [Test]
         public void IsValidFileName_EmptyFileName_ThrowsFluent()
         {
@@ -106,6 +111,7 @@ namespace LogAn.UnitTests
         public void IsValidFileName_WhenCalled_ChangesWasLastFileNameValid()
         {
             LogAnalyzer la = MakeAnalyzer();
+            _myFakeManager.WillBeValid = false;
 
             la.IsValidLogFileName("badname.foo");
 
@@ -118,6 +124,7 @@ namespace LogAn.UnitTests
         public void IsValidFileName_WhenCalled_ChangesWasLastFileNameValid(string file, bool expected)
         {
             LogAnalyzer la = MakeAnalyzer();
+            _myFakeManager.WillBeValid = expected;
 
             la.IsValidLogFileName(file);
 
@@ -127,12 +134,10 @@ namespace LogAn.UnitTests
         [Test]
         public void IsValidFileName_NameSupportedExtension_ReturnsTrue()
         {
-            FakeExtensionManager myFakeManager = new FakeExtensionManager();
-            myFakeManager.WillBeValid = true;
-            LogAnalyzer log = new LogAnalyzer();
-            log.ExtensionManager = myFakeManager;
+            LogAnalyzer la = MakeAnalyzer();
+            _myFakeManager.WillBeValid = true;
             
-            bool result = log.IsValidLogFileName("short.ext");
+            bool result = la.IsValidLogFileName("short.ext");
             
             Assert.True(result);
         }
@@ -140,12 +145,10 @@ namespace LogAn.UnitTests
         [Test]
         public void IsValidFileName_ExtManagerThrowsException_ReturnsFalse()
         {
-            FakeExtensionManager myFakeManager = new FakeExtensionManager();
-            myFakeManager.WillThrow = new Exception("this is fake");
-            LogAnalyzer log = new LogAnalyzer();
-            log.ExtensionManager = myFakeManager;
+            LogAnalyzer la = MakeAnalyzer();
+            _myFakeManager.WillThrow = new Exception("this is fake");
             
-            bool result = log.IsValidLogFileName("anything.anyextension");
+            bool result = la.IsValidLogFileName("anything.anyextension");
             
             Assert.False(result);
         }

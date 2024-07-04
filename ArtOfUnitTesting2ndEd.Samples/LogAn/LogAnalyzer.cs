@@ -1,4 +1,6 @@
-﻿namespace LogAn
+﻿using System;
+
+namespace LogAn
 {
     public class LogAnalyzer
     {
@@ -18,14 +20,17 @@
 
         public bool IsValidLogFileName(string fileName)
         {
+            WasLastFileNameValid = false;
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("filename has to be provided");
+            }
+
             try
             {
-                WasLastFileNameValid = false;
-
-                if (!_manager.IsValid(fileName)) return false;
-
-                WasLastFileNameValid = true;
-                return true;
+                WasLastFileNameValid = _manager.IsValid(fileName);
+                return WasLastFileNameValid;
             }
             catch
             {
