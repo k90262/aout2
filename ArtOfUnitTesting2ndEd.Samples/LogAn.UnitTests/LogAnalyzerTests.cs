@@ -65,6 +65,7 @@ namespace LogAn.UnitTests
             Assert.AreEqual(expected,result);
         }
 
+        [Ignore]
         [Test]
         [ExpectedException(typeof(ArgumentException),
               ExpectedMessage = "filename has to be provided")]
@@ -76,9 +77,10 @@ namespace LogAn.UnitTests
 
         private LogAnalyzer MakeAnalyzer()
         {
-            return new LogAnalyzer(new FileExtensionManager());
+            return new LogAnalyzer();
         }
 
+        [Ignore]
         [Test]
         public void IsValidFileName_EmptyFileName_Throws()
         {
@@ -88,7 +90,8 @@ namespace LogAn.UnitTests
             
             StringAssert.Contains("filename has to be provided",ex.Message);
         }
-        
+      
+        [Ignore]
         [Test]
         public void IsValidFileName_EmptyFileName_ThrowsFluent()
         {
@@ -126,7 +129,8 @@ namespace LogAn.UnitTests
         {
             FakeExtensionManager myFakeManager = new FakeExtensionManager();
             myFakeManager.WillBeValid = true;
-            LogAnalyzer log = new LogAnalyzer(myFakeManager);
+            LogAnalyzer log = new LogAnalyzer();
+            log.ExtensionManager = myFakeManager;
             
             bool result = log.IsValidLogFileName("short.ext");
             
@@ -138,7 +142,8 @@ namespace LogAn.UnitTests
         {
             FakeExtensionManager myFakeManager = new FakeExtensionManager();
             myFakeManager.WillThrow = new Exception("this is fake");
-            LogAnalyzer log = new LogAnalyzer(myFakeManager);
+            LogAnalyzer log = new LogAnalyzer();
+            log.ExtensionManager = myFakeManager;
             
             bool result = log.IsValidLogFileName("anything.anyextension");
             

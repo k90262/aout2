@@ -4,12 +4,17 @@
     {
         private IExtensionManager _manager;
 
-        public LogAnalyzer(IExtensionManager mgr)
+        public LogAnalyzer()
         {
-            _manager = mgr;
+            _manager = new FileExtensionManager();
         }
 
         public bool WasLastFileNameValid { get; set; }
+        public IExtensionManager ExtensionManager
+        {
+            get { return _manager; }
+            set { _manager = value; }
+        }
 
         public bool IsValidLogFileName(string fileName)
         {
