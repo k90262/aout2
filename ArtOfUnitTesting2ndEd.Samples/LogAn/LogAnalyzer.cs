@@ -8,15 +8,10 @@ namespace LogAn
 
         public LogAnalyzer()
         {
-            _manager = new FileExtensionManager();
+            _manager = ExtensionManagerFactory.Create();
         }
 
         public bool WasLastFileNameValid { get; set; }
-        public IExtensionManager ExtensionManager
-        {
-            get { return _manager; }
-            set { _manager = value; }
-        }
 
         public bool IsValidLogFileName(string fileName)
         {

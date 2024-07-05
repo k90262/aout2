@@ -82,8 +82,8 @@ namespace LogAn.UnitTests
         private LogAnalyzer MakeAnalyzer()
         {
             _myFakeManager = new FakeExtensionManager();
+            ExtensionManagerFactory.SetManager(_myFakeManager);
             LogAnalyzer log = new LogAnalyzer();
-            log.ExtensionManager = _myFakeManager;
             return log;
         }
 
