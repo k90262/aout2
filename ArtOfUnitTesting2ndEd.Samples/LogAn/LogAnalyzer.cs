@@ -4,11 +4,8 @@ namespace LogAn
 {
     public class LogAnalyzer
     {
-        private IExtensionManager _manager;
-
         public LogAnalyzer()
         {
-            _manager = ExtensionManagerFactory.Create();
         }
 
         public bool WasLastFileNameValid { get; set; }
@@ -24,13 +21,18 @@ namespace LogAn
 
             try
             {
-                WasLastFileNameValid = _manager.IsValid(fileName);
+                WasLastFileNameValid = GetManager().IsValid(fileName);
                 return WasLastFileNameValid;
             }
             catch
             {
                 return false;
             }
+        }
+
+        protected virtual IExtensionManager GetManager()
+        {
+            return new FileExtensionManager();
         }
     }
 }

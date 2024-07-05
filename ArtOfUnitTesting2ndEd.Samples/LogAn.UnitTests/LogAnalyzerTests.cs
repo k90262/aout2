@@ -82,8 +82,7 @@ namespace LogAn.UnitTests
         private LogAnalyzer MakeAnalyzer()
         {
             _myFakeManager = new FakeExtensionManager();
-            ExtensionManagerFactory.SetManager(_myFakeManager);
-            LogAnalyzer log = new LogAnalyzer();
+            LogAnalyzer log = new TestableLogAnalyzer(_myFakeManager);
             return log;
         }
 
@@ -151,6 +150,21 @@ namespace LogAn.UnitTests
             bool result = la.IsValidLogFileName("anything.anyextension");
             
             Assert.False(result);
+        }
+    }
+
+    internal class TestableLogAnalyzer : LogAnalyzer
+    {
+        public TestableLogAnalyzer(IExtensionManager mgr)
+        {
+            Manager = mgr;
+        }
+
+        public IExtensionManager Manager;
+
+        protected override IExtensionManager GetManager()
+        {
+            return Manager;
         }
     }
 
